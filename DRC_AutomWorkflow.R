@@ -32,12 +32,12 @@ library("sfsmisc")
 # define the working directory
 # when copy file path from Windows Explorer please replace \ with //
 
-dat.path <- "D://Melanie//input//"# your directory with the input files only (xlsx format)
-res.path <- "D://Melanie//output//"# your directory where the output results will be stored
+dat.path <- "..."# your directory with the input files only (xlsx format)
+res.path <- "..."# your directory where the output results will be stored
 
 
-dat.path <- "/media/dianacs/data1/Melanie/input/"# your directory with the input files only (xlsx format)
-res.path <- "/media/dianacs/data1/Melanie/output/"# your directory where the output results will be stored
+dat.path <- "..."# your directory with the input files only (xlsx format)
+res.path <- "..."# your directory where the output results will be stored
 
 
 # dat.path <- "/media/dianacs/data1/Melanie/input/"
