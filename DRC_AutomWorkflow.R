@@ -91,14 +91,7 @@ for (b in names(dat.in)){
     ### 
     
     # fit the model
-    tryCatch({
-      mod1 <- drm(pViab~conc, bioRep, data=df.long, 
-                  weight = c(1/df.long$pViab),
-                  fct=LL.4(names=c("Slope", "Lower Limit", "Upper Limit", "EC50")), 
-                  lowerl=c(NA,(0-0.01),(100-0.01),NA), upperl=c(NA,(0+0.01),(100+0.01),NA),
-                  na.action=na.exclude)
-    },error=function(e){cat("Error :", conditionMessage(e),"\n")})
-    dat.out.t[[s]] <- summary(mod1)
+    # ...
     
     # save coefficient estimates to worksheets-workbooks
     cat(paste("Saving model estimates to Workbook >>", b,"  Worksheet >>",s, "\n", sep=''))
@@ -150,31 +143,8 @@ for (b in names(dat.in)){
     
     pdf(file.path(res.path,paste(s,"_ProfileL_CI.pdf",sep="")),width=11, height=8.5,pointsize=12, paper='special')
     
-    par(mfrow=c(3,2))
-    rep.n <- unique(df.long$bioRep)
-    names(rep.n) <- unique(df.long$bioRep)
-
+    # ...
     
-    for (br in names(rep.n)){
-      cat(paste("Calculating 95% Profile Likelihood CI for Workbook >>", b,"  Worksheet >>",s,"Replicate",br, "\n", sep=''))
-      conc <- seq(0.1, 100, 0.1) 
-      goodnessfit <- rep(NA, length(conc)) #you create a vector with the same size (NA) as steps in "conc" (otherwise potentially memory problem)
-      for(i in 1:length(conc)) {
-        fixEC50 <- conc[i]
-        tryCatch({
-          mod1.pl <- drm(pViab~conc, data=df.long[which(df.long$bioRep == br),], 
-                         weight = c(1/df.long[which(df.long$bioRep == br),"pViab"]),
-                         fct=LL.4(names=c("Slope", "Lower Limit", "Upper Limit", "EC50")), 
-                         lowerl=c(NA,(0-0.01),(100-0.01),(fixEC50-0.01)), 
-                         upperl=c(NA,(0+0.01),(100+0.01),(fixEC50+.01)))
-          goodnessfit[i] <- sqrt(sum(residuals(mod1.pl)^2))
-        },error=function(e){cat("Error :", conditionMessage(e),"\n")})
-      }
-      
-      index1 <- which(goodnessfit<(min(goodnessfit)+qchisq(p=0.95, df=3))) #which of the dots of my goodnessfit are below the line = 95 % CI 
-      conc[min(index1)]#get upper and lower 95% CI => put outcome to the respective data in the excel file (see line 107)
-      conc[max(index1)]
-      
       pl_ci <- as.data.frame(rbind(cbind(paste("EC50_PL95%CI_Lower Limit:",br,sep=""),as.character(conc[min(index1)])),
                                    cbind(paste("EC50_PL95%CI_Upper Limit:",br,sep=""),as.character(conc[max(index1)]))))
       
@@ -183,9 +153,7 @@ for (b in names(dat.in)){
       
       appendWorksheet(res.wb,pl_ci, paste(s,"_EC50",sep=""),header=FALSE)
       
-      plot(conc, goodnessfit, main= paste("Profile Likelihood CI",s,":",br,sep=" "),ylim=c(0.1,1000)) 
-      abline(h=min(goodnessfit), col="red")
-      abline(h=min(goodnessfit)+(qchisq(p=0.95, df=3)))
+      # ...
  
       ## UPDATE 08.12.2015 >> add to plots: profile likelihood EC50 (the concentration corresponding to the min of goodnessfit)
       abline(v=conc[which(goodnessfit == min(goodnessfit))],col="cyan")
